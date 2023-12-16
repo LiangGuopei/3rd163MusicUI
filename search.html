@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索</title>
+    <script src="jquery-3.7.1.js"></script>
+    <script src="tools.js"></script>
+    <script>
+        function getURL(){
+            // return document.getElementById("apiURL").value
+            return localStorage.getItem('apiURL')
+        }
+        function simpleSearch(){
+            $.get(getURL()+'/search?keywords=testify',(data,status) => {
+                console.log(JSON.stringify(data))
+            })
+        }
+        function Search(){
+            var inp = document.getElementById("SearchInputBox").value
+            var url = getURL()
+            $.get(url+"/search?limit=10&keywords="+inp,(data,status)=>{
+                var list = document.getElementById("SearchList")
+                var liststr = "<thead><th>id</th><th>封面</th><th>名称</th><th>歌手</th><th>操作</th></tr></thead><tbody>"
+                for(n1 in data['result']['songs']){
+                    a = data['result']['songs'][n1]
+                    liststr += "<tr>"
+                    liststr += "<td>"+a['id']+"</td>"
+                    liststr += `<td><img width="50" height="50" id="mimg`+a['id']+`" src="https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg"/></td>`
+                    SearchImageFill(a['id'])
+                    liststr += `<td>`+a['name']+"</td>"
+                    var artslist = ""
+                    for(ia in a['artists']){
+                        iaa = a['artists'][ia]
+                        artslist += iaa['name'] + " "
+                    }
+                
+                    liststr += "<td>"+artslist+"</td>"
+                    if(a['fee'] == 1){
+                        liststr += "<td><button disabled>播放(VIP</button></td>"
+                    }else{
+                        liststr += "<td>"
+                        liststr += "<button onclick=\"play("+a['id']+")\">播放</button>"
+                        liststr += "<button onclick=\"addlist("+a['id']+")\">添加到歌单</button>"
+                        liststr += "</td>"
+                    }
+                    
+                    liststr += "</tr>"
+                }
+                liststr += "</tbody>"
+                list.innerHTML = liststr
+            })
+        }
+        function SearchImageFill(id){
+            $.get(getURL()+"/song/detail?ids="+id,(data,status)=>{
+                document.getElementById(`mimg`+id).src = data['songs'][0]['al']['picUrl']
+            })
+        }
+        function play(id){
+            // document.getElementById("player").src = "https://music.163.com/outchain/player?type=2&id="+id+"&auto=1&height=66"
+            var bc = new BroadcastChannel("player-ui-play")
+            bc.postMessage({
+                id: id
+            })
+        }
+        function addlist(id){
+            $.get(getURL()+"/song/detail?ids="+id,(data,status)=>{
+                var artslist = ""
+                for(ia in data['songs'][0]['ar']){
+                    iaa = data['songs'][0]['ar'][ia]
+                    artslist += iaa['name'] + " "
+                }
+                const d = {
+                    id: id,
+                    image: data['songs'][0]['al']['picUrl'],
+                    title: data['songs'][0]['name'],
+                    arts: artslist
+                }
+                list = JSON.parse(localStorage.getItem('list'))
+                // if(!list['list'].includes(d)){
+                //     list['list'].push(d)
+                // }
+                if(!includesID(list['list'],id)){
+                    list['list'].push(d)
+                    alert('添加成功！')
+                }else{
+                    alert('已存在')
+                }
+                localStorage.setItem('list',JSON.stringify(list))
+            })
+        }
+    </script>
+</head>
+<body>
+    <!-- <div>
+        <input id="apiURL" type="url" value="http://127.0.0.1:3000">
+    </div> -->
+    <!-- <div>
+        <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 id="player"></iframe>
+    </div> -->
+    <h5>搜索</h5>
+    <div>
+        <input id="SearchInputBox" type="text" value="">
+        <button onclick="Search()">搜索</button>
+    </div>
+    <div>
+        <table id="SearchList" border="1">
+            
+        </table>
+    </div>
+</body>
+</html>

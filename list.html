@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function play(id){
+            var bc = new BroadcastChannel("player-ui-play")
+            bc.postMessage({
+                id: id
+            })
+        }
+        function remove(id){
+            list = JSON.parse(localStorage.getItem("list"))
+            // console.log(list)
+            newlist = []
+            for(n1 in list['list']){
+                i = list['list'][n1]
+                if(i['id'] !== id){
+                    newlist.push(i)
+                }
+            }
+            list['list'] = newlist
+            localStorage.setItem('list',JSON.stringify(list))
+            show()
+            alert('删除成功！')
+        }
+        function show(){
+            list = JSON.parse(localStorage.getItem("list"))
+            // console.log(list)
+            tablestr = ""
+            for(n1 in list['list']){
+                liststr = "<tr>"
+                i = list['list'][n1]
+                liststr += "<td>"+i['id']+"</td>"
+                liststr += `<td><img width="50" height="50" src="`+i['image']+`"></td>`
+                liststr += `<td>`+i['title']+`</td>`
+                liststr += `<td>`+i['arts']+`</td>`
+                liststr += `<td><button onclick="play(`+i['id']+`)">播放</button><button onclick="remove(`+i['id']+`)">删除</button></td>`
+                liststr += "<tr/>"
+                tablestr += liststr
+            }
+            document.getElementById('listBody').innerHTML = tablestr
+        }
+    </script>
+</head>
+<body>
+    <h5>歌单</h5>
+    <table border="1">
+        <thead>
+            <th>id</th>
+            <th>封面</th>
+            <th>名称</th>
+            <th>歌手</th>
+            <th>操作</th>
+        </thead>
+        <tbody id="listBody">
+            
+        </tbody>
+    </table>
+</body>
+<script>
+    show()
+</script>
+</html>

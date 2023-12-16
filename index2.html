@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function seturl(){
+            localStorage.setItem('apiURL',document.getElementById('apiurl').value)
+            alert('修改成功！ ')
+        }
+    </script>
+</head>
+<body>
+    <h5>主页</h5>
+    第三方网易云音乐UI
+    <br>
+    by CatVer.
+    <br>
+    APIURL: <input id="apiurl">
+    <button onclick="seturl()">修改</button>
+</body>
+<script>
+    if(localStorage.getItem('apiURL') != null){
+        document.getElementById('apiurl').value = localStorage.getItem('apiURL')
+    }
+</script>
+</html>
