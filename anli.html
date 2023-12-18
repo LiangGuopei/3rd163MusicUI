@@ -58,7 +58,7 @@
     // $.get(gedanxiqi,(data,status)=>{
     //     document.getElementById("count").innerHTML = "歌曲总数："+data['playlist']['trackCount']
     // })
-    $.get(gedanxiqi,(data,status)=>{
+    $.get(gedanxiqi+"&t="+new Date().getTime(),(data,status)=>{
         document.getElementById("count").innerHTML = "歌曲总数："+data['playlist']['trackCount']
         xuhao = 1
         tbody = document.getElementById("listBody")
