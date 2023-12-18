@@ -7,8 +7,8 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.7.1.min.js"></script>
     <script src="tools.js"></script>
     <script>
-        const gedan = "https://163api.qxiao.eu.org/playlist/track/all?id=8963738332"
-        const gedanxiqi = "https://163api.qxiao.eu.org/playlist/detail?id=8963738332"
+        const gedan = localStorage.getItem('apiURL')+"/playlist/track/all?id=8963738332"
+        const gedanxiqi = localStorage.getItem('apiURL')+"/playlist/detail?id=8963738332"
 
         function play(id){
             // document.getElementById("player").src = "https://music.163.com/outchain/player?type=2&id="+id+"&auto=1&height=66"
