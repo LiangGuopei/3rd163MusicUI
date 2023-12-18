@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>搜索</title>
-    <script src="jquery-3.7.1.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.7.1.min.js"></script>
     <script src="tools.js"></script>
     <script>
         function getURL(){
@@ -17,6 +17,7 @@
             })
         }
         function Search(){
+            document.getElementById("SearchList").innerHTML = "搜索中。。。"
             var inp = document.getElementById("SearchInputBox").value
             var url = getURL()
             $.get(url+"/search?limit=10&keywords="+inp,(data,status)=>{
@@ -37,13 +38,15 @@
                 
                     liststr += "<td>"+artslist+"</td>"
                     if(a['fee'] == 1){
-                        liststr += "<td><button disabled>播放(VIP</button></td>"
+                        liststr += "<td><button disabled>播放(VIP</button>"
                     }else{
                         liststr += "<td>"
                         liststr += "<button onclick=\"play("+a['id']+")\">播放</button>"
-                        liststr += "<button onclick=\"addlist("+a['id']+")\">添加到歌单</button>"
-                        liststr += "</td>"
+                        liststr += "<button onclick=\"addlist("+a['id']+")\">添加到歌单</button>"    
                     }
+                    liststr += "<button onclick=\"openNew("+a['id']+")\">网易云音乐打开</button>"
+                    // liststr += '<a href="https://music.163.com/#/song?id='+a['id']+'">网易云音乐打开</a>'
+                    liststr += "</td>"
                     
                     liststr += "</tr>"
                 }
@@ -88,6 +91,9 @@
                 }
                 localStorage.setItem('list',JSON.stringify(list))
             })
+        }
+        function openNew(id){
+            window.open('https://music.163.com/#/song?id='+id)
         }
     </script>
 </head>

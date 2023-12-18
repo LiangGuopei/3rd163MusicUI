@@ -10,7 +10,8 @@
         <script src="index.js"></script>
         <button onclick="indexPage()">主页</button> |
         <button onclick="searchPage()">搜索</button> |
-        <button onclick="listPage()">歌单</button>
+        <button onclick="listPage()">歌单</button> |
+        <button onclick="anliPage()">列表</button>
     </nav>
 
 
@@ -19,7 +20,7 @@
 </body>
 <script>
     if(localStorage.getItem('apiURL') == null){
-        localStorage.setItem('apiURL',"https://163music-api.qxiao.eu.org")
+        localStorage.setItem('apiURL',"https://163api.qxiao.eu.org")
     }
     if(localStorage.getItem('lastPlay') != null){
         document.getElementById("player-id").src = "https://music.163.com/outchain/player?type=2&auto=0&height=66&id="+localStorage.getItem('lastPlay')

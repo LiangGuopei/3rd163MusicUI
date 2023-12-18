@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安利</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.7.1.min.js"></script>
+    <script src="tools.js"></script>
+    <script>
+        const gedan = "https://163api.qxiao.eu.org/playlist/track/all?id=8963738332"
+        const gedanxiqi = "https://163api.qxiao.eu.org/playlist/detail?id=8963738332"
+
+        function play(id){
+            // document.getElementById("player").src = "https://music.163.com/outchain/player?type=2&id="+id+"&auto=1&height=66"
+            var bc = new BroadcastChannel("player-ui-play")
+            bc.postMessage({
+                id: id
+            })
+        }
+        function addlist(id){
+            const d = {
+                    id: id,
+                    image: document.getElementById(id+"_tr_image").src,
+                    title: document.getElementById(id+"_tr_name").innerHTML,
+                    arts: document.getElementById(id+"_tr_arts").innerHTML
+                }
+                list = JSON.parse(localStorage.getItem('list'))
+                if(!includesID(list['list'],id)){
+                    list['list'].push(d)
+                    alert('添加成功！')
+                }else{
+                    alert('已存在')
+                }
+                localStorage.setItem('list',JSON.stringify(list))
+        }
+        function openNew(id){
+            window.open('https://music.163.com/#/song?id='+id)
+        }
+    </script>
+</head>
+<body>
+    <p id="count">歌曲总数：加载中</p>
+    <table border="1">
+        <thead>
+            <th>序号</th>
+            <th>id</th>
+            <th>封面</th>
+            <th>名称</th>
+            <th>歌手</th>
+            <th>操作</th>
+        </thead>
+        <tbody id="listBody">
+            
+        </tbody>
+    </table>
+</body>
+<script>
+    // $.get(gedanxiqi,(data,status)=>{
+    //     document.getElementById("count").innerHTML = "歌曲总数："+data['playlist']['trackCount']
+    // })
+    $.get(gedanxiqi,(data,status)=>{
+        document.getElementById("count").innerHTML = "歌曲总数："+data['playlist']['trackCount']
+        xuhao = 1
+        tbody = document.getElementById("listBody")
+        for(num1 in data['playlist']['tracks']){
+            i = data['playlist']['tracks'][num1]
+            tr = document.createElement('tr')
+            tr.id = i['id']+"_tr"
+            
+            xuhao_td = document.createElement('td')
+            xuhao_td.innerHTML = xuhao
+
+            id = document.createElement('td')
+            id.innerHTML = i['id']
+            
+            image_td = document.createElement('td')
+            image = document.createElement('img')
+            image.id = i['id']+"_tr_image"
+            image.src = i['al']['picUrl']
+            image.height = 50
+            image.width = 50
+            image_td.appendChild(image)
+
+            name_td = document.createElement('td')
+            name_td.id = i['id']+"_tr_name"
+            name_td.innerHTML = i['name']
+            
+            arts_str = ""
+            for(num2 in i['ar']){
+                i2 = i['ar'][num2]
+                arts_str += i2['name']+" "
+            }
+            arts = document.createElement('td')
+            arts.id = i['id']+"_tr_arts"
+            arts.innerHTML = arts_str
+
+            work = document.createElement('td')
+            // tianjia = document.createElement('button')
+            // tianjia.innerHTML = "添加到歌单"
+            // tianjia.onclick = "addlist("+i['id']+")"
+            
+            // playb = document.createElement('button')
+            // playb.onclick = "play("+i['id']+")"
+            // playb.innerHTML = "播放"
+            // openN = document.createElement('button')
+            // openN.onclick = "openNew("+i['id']+")"
+            // openN.innerHTML = "网易云音乐打开"
+            
+            btulist = ""
+            btulist += "<button onclick=\"addlist("+i['id']+")\">添加到歌单</button>"
+            btulist += "<button onclick=\"play("+i['id']+")\">播放</button>"
+            btulist += "<button onclick=\"openNew("+i['id']+")\">网易云音乐打开</button>"
+            work.innerHTML = btulist
+            
+            tr.appendChild(xuhao_td)
+            tr.appendChild(id)
+            tr.appendChild(image_td)
+            tr.appendChild(name_td)
+            tr.appendChild(arts)
+            tr.appendChild(work)
+            
+            tbody.appendChild(tr)
+            xuhao = xuhao + 1
+        }
+    })
+</script>
+</html>

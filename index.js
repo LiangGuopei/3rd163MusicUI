@@ -9,3 +9,6 @@ function indexPage(){
 function listPage(){
     document.getElementById('page').src = "list.html"
 }
+function anliPage(){
+    document.getElementById('page').src = "anli.html"
+}
