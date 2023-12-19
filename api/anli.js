@@ -3,5 +3,7 @@ data = {
 }
 
 module.exports = (req, res) => {
-    res.json(data)
+    var urlp = url.parse(req.url,true)
+    var query = urlp.query
+    res.json(query)
 }
