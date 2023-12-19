@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第三方网易云音乐UI</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.7.1.min.js"></script>
+    <script src="getanli.js"></script>
 </head>
 <body>
     <nav>
@@ -11,7 +13,8 @@
         <button onclick="indexPage()">主页</button> |
         <button onclick="searchPage()">搜索</button> |
         <button onclick="listPage()">歌单</button> |
-        <button onclick="anliPage()">列表</button>
+        <button onclick="anliPage(true)">列表（刷新</button> |
+        <button onclick="anliPage(false)">列表</button>
     </nav>
 
 
@@ -27,7 +30,7 @@
     }
     var bc = new BroadcastChannel("player-ui-play")
     bc.onmessage = function(e){
-        console.log(e.data)
+        // console.log(e.data)
         localStorage.setItem('lastPlay',e.data['id'])
         document.getElementById("player-id").src = "https://music.163.com/outchain/player?type=2&auto=1&height=66&id="+e.data['id']
     }

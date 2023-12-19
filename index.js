@@ -9,6 +9,10 @@ function indexPage(){
 function listPage(){
     document.getElementById('page').src = "list.html"
 }
-function anliPage(){
-    document.getElementById('page').src = "anli.html"
+function anliPage(now){
+    if(now){
+        document.getElementById('page').src = "anli.html?now=1"
+    }else{
+        document.getElementById('page').src = "anli.html?now=0"
+    }
 }

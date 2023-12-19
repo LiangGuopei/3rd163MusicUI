@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>安利</title>
+    <title>anli</title>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.7.1.min.js"></script>
     <script src="tools.js"></script>
+    <script src="getanli.js"></script>
     <script>
         const gedan = localStorage.getItem('apiURL')+"/playlist/track/all?id=8963738332"
         const gedanxiqi = localStorage.getItem('apiURL')+"/playlist/detail?id=8963738332"
@@ -36,9 +37,15 @@
         function openNew(id){
             window.open('https://music.163.com/#/song?id='+id)
         }
+        function getQueryString(name) {
+            const url_string = window.location.href
+            const url = new URL(url_string);
+            return url.searchParams.get(name);
+        }
     </script>
 </head>
 <body>
+    <h5 id="h5_title">列表（刷新</h5>
     <p id="count">歌曲总数：加载中</p>
     <table border="1">
         <thead>
@@ -55,15 +62,22 @@
     </table>
 </body>
 <script>
-    // $.get(gedanxiqi,(data,status)=>{
-    //     document.getElementById("count").innerHTML = "歌曲总数："+data['playlist']['trackCount']
-    // })
-    $.get(gedanxiqi,(data,status)=>{
-        document.getElementById("count").innerHTML = "歌曲总数："+data['playlist']['trackCount']
-        xuhao = 1
+    async function a1(){
         tbody = document.getElementById("listBody")
-        for(num1 in data['playlist']['tracks']){
-            i = data['playlist']['tracks'][num1]
+        nowN = getQueryString("now")
+        console.log(nowN)
+        if(nowN == null) nowN = 0
+        var dataD = null
+        if(nowN == 1){
+            dataD = await getanli(true)
+        }else{
+            dataD = await getanli(false)
+            document.getElementById("h5_title").innerHTML = "列表"
+        }
+        document.getElementById("count").innerHTML = "歌曲总数："+dataD['count']
+        xuhao = 1
+        for(num1 in dataD['songs']){
+            i = dataD['songs'][num1]
             tr = document.createElement('tr')
             tr.id = i['id']+"_tr"
             
@@ -76,7 +90,7 @@
             image_td = document.createElement('td')
             image = document.createElement('img')
             image.id = i['id']+"_tr_image"
-            image.src = i['al']['picUrl']
+            image.src = i['image']
             image.height = 50
             image.width = 50
             image_td.appendChild(image)
@@ -85,27 +99,12 @@
             name_td.id = i['id']+"_tr_name"
             name_td.innerHTML = i['name']
             
-            arts_str = ""
-            for(num2 in i['ar']){
-                i2 = i['ar'][num2]
-                arts_str += i2['name']+" "
-            }
             arts = document.createElement('td')
             arts.id = i['id']+"_tr_arts"
-            arts.innerHTML = arts_str
+            arts.innerHTML = i['arts']
 
             work = document.createElement('td')
-            // tianjia = document.createElement('button')
-            // tianjia.innerHTML = "添加到歌单"
-            // tianjia.onclick = "addlist("+i['id']+")"
-            
-            // playb = document.createElement('button')
-            // playb.onclick = "play("+i['id']+")"
-            // playb.innerHTML = "播放"
-            // openN = document.createElement('button')
-            // openN.onclick = "openNew("+i['id']+")"
-            // openN.innerHTML = "网易云音乐打开"
-            
+
             btulist = ""
             btulist += "<button onclick=\"addlist("+i['id']+")\">添加到歌单</button>"
             btulist += "<button onclick=\"play("+i['id']+")\">播放</button>"
@@ -122,7 +121,7 @@
             tbody.appendChild(tr)
             xuhao = xuhao + 1
         }
-        // console.log(tbody.innerHTML)
-    })
+    }
+    a1()
 </script>
 </html>
