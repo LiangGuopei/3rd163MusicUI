@@ -9,10 +9,10 @@ function indexPage(){
 function listPage(){
     document.getElementById('page').src = "list.html"
 }
-function anliPage(now){
-    if(now){
-        document.getElementById('page').src = "anli.html?now=1"
-    }else{
-        document.getElementById('page').src = "anli.html?now=0"
-    }
+function anliPage(){
+    document.getElementById('page').src = "playlist.html?playlist_id=8963738332"
+}
+
+function phigrosPage(){
+    document.getElementById('page').src = "playlist.html?playlist_id=2778408564"
 }

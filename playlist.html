@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>playlist - get</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.7.1.min.js"></script>
+    <script src="tools.js"></script>
+</head>
+<body>
+    <h5 id="playlist_title_id">歌单获取：</h5>
+    <p id="playlist_desc_id">简介：</p>
+    <table border="1">
+        <thead>
+            <th>序号</th>
+            <th>id</th>
+            <th>封面</th>
+            <th>名称</th>
+            <th>歌手</th>
+            <th>操作</th>
+        </thead>
+        <tbody id="playlist_tbody">
+            
+        </tbody>
+    </table>
+</body>
+<script>
+    var id = getQueryString('playlist_id')
+    if(id == null) id = "8963738332"
+    var data = {}
+    $.get(localStorage.getItem('apiURL')+"/playlist/detail?id="+id,(d,_)=>{
+        data['id'] = d['playlist']['id']
+        data['name'] = d['playlist']['name']
+        data['desc'] = d['playlist']['description']
+        data['count'] = d['playlist']['trackCount']
+        data['songs'] = []
+        for(num1 in d['playlist']['tracks']){
+            var i = d['playlist']['tracks'][num1]
+            var trackData = {}
+            trackData['id'] = i['id']
+            trackData['name'] = i['name']
+            trackData['img'] = i['al']['picUrl']
+            arts_str = ""
+            for(num2 in i['ar']){
+                i2 = i['ar'][num2]
+                arts_str += i2['name']+" "
+            }
+            trackData['arts'] = arts_str
+            data['songs'].push(trackData)
+        }
+        document.getElementById('playlist_title_id').innerHTML = '歌单获取：'+data['name']+'(总数：'+data['count']+' | ID: '+data['id']+')'
+        document.getElementById('playlist_desc_id').innerHTML = '简介：'+data['desc']
+        tbody = document.getElementById('playlist_tbody')
+        xuhao = 1
+        for(num1 in data['songs']){
+            var i = data['songs'][num1]
+            tr = document.createElement('tr')
+            tr.id = i['id']+"_tr"
+            
+            xuhao_td = document.createElement('td')
+            xuhao_td.innerHTML = xuhao
+
+            id = document.createElement('td')
+            id.innerHTML = i['id']
+            
+            image_td = document.createElement('td')
+            image = document.createElement('img')
+            image.id = i['id']+"_tr_image"
+            image.src = i['img']
+            image.height = 50
+            image.width = 50
+            image_td.appendChild(image)
+
+            name_td = document.createElement('td')
+            name_td.id = i['id']+"_tr_name"
+            name_td.innerHTML = i['name']
+            
+            arts = document.createElement('td')
+            arts.id = i['id']+"_tr_arts"
+            arts.innerHTML = i['arts']
+
+            work = document.createElement('td')
+
+            btulist = ""
+            btulist += "<button onclick=\"addlist("+i['id']+")\">添加到歌单</button>"
+            btulist += "<button onclick=\"play("+i['id']+")\">播放</button>"
+            btulist += "<button onclick=\"openNew("+i['id']+")\">网易云音乐打开</button>"
+            work.innerHTML = btulist
+            
+            tr.appendChild(xuhao_td)
+            tr.appendChild(id)
+            tr.appendChild(image_td)
+            tr.appendChild(name_td)
+            tr.appendChild(arts)
+            tr.appendChild(work)
+            
+            tbody.appendChild(tr)
+            xuhao = xuhao + 1
+        }
+    })
+    
+</script>
+</html>
