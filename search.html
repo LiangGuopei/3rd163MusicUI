@@ -26,17 +26,17 @@
                 for(n1 in data['result']['songs']){
                     a = data['result']['songs'][n1]
                     liststr += "<tr>"
-                    liststr += "<td>"+a['id']+"</td>"
-                    liststr += `<td><img width="50" height="50" id="mimg`+a['id']+`" src="https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg"/></td>`
+                    liststr += '<td id="'+a['id']+'_tr_id">'+a['id']+"</td>"
+                    liststr += `<td><img id="`+a['id']+`_tr_image" width="50" height="50" src="https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg"/></td>`
                     SearchImageFill(a['id'])
-                    liststr += `<td>`+a['name']+"</td>"
+                    liststr += `<td id="`+a['id']+`_tr_name">`+a['name']+"</td>"
                     var artslist = ""
                     for(ia in a['artists']){
                         iaa = a['artists'][ia]
                         artslist += iaa['name'] + " "
                     }
                 
-                    liststr += "<td>"+artslist+"</td>"
+                    liststr += `<td id="`+a['id']+`_tr_arts">`+artslist+"</td>"
                     if(a['fee'] == 1){
                         liststr += "<td><button disabled>播放(VIP</button>"
                     }else{
@@ -56,44 +56,8 @@
         }
         function SearchImageFill(id){
             $.get(getURL()+"/song/detail?ids="+id,(data,status)=>{
-                document.getElementById(`mimg`+id).src = data['songs'][0]['al']['picUrl']
+                document.getElementById(id+`_tr_image`).src = data['songs'][0]['al']['picUrl']
             })
-        }
-        function play(id){
-            // document.getElementById("player").src = "https://music.163.com/outchain/player?type=2&id="+id+"&auto=1&height=66"
-            var bc = new BroadcastChannel("player-ui-play")
-            bc.postMessage({
-                id: id
-            })
-        }
-        function addlist(id){
-            $.get(getURL()+"/song/detail?ids="+id,(data,status)=>{
-                var artslist = ""
-                for(ia in data['songs'][0]['ar']){
-                    iaa = data['songs'][0]['ar'][ia]
-                    artslist += iaa['name'] + " "
-                }
-                const d = {
-                    id: id,
-                    image: data['songs'][0]['al']['picUrl'],
-                    title: data['songs'][0]['name'],
-                    arts: artslist
-                }
-                list = JSON.parse(localStorage.getItem('list'))
-                // if(!list['list'].includes(d)){
-                //     list['list'].push(d)
-                // }
-                if(!includesID(list['list'],id)){
-                    list['list'].push(d)
-                    alert('添加成功！')
-                }else{
-                    alert('已存在')
-                }
-                localStorage.setItem('list',JSON.stringify(list))
-            })
-        }
-        function openNew(id){
-            window.open('https://music.163.com/#/song?id='+id)
         }
     </script>
 </head>

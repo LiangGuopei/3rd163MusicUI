@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>voices - get</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.7.1.min.js"></script>
+    <script src="tools.js"></script>
+    <script>
+        function play(id){
+            var bc = new BroadcastChannel("player-ui-play-voice")
+            bc.postMessage({
+                id: id
+            })
+        }
+        function openNew(id){
+            window.open('https://music.163.com/#/program?id='+id)
+        }
+        function addlist(id){
+            const d = {
+                    id: id,
+                    image: document.getElementById(id+"_tr_image").src,
+                    title: document.getElementById(id+"_tr_name").innerHTML,
+                    arts: document.getElementById(id+"_tr_arts").innerHTML,
+                    type:"voice"
+                }
+                list = JSON.parse(localStorage.getItem('list'))
+                nlist = []
+                if(!includesID(list['list'],id)){
+                    nlist.push(d)
+                    list['list'].forEach((item,_)=>{
+                        nlist.push(item)
+                    });
+                    list['list'] = nlist
+                    alert('添加成功！')
+                }else{
+                    alert('已存在')
+                }
+                localStorage.setItem('list',JSON.stringify(list))
+        }
+    </script>
+</head>
+<body>
+    <h5 id="voices_title_id">电台获取：获取中</h5>
+    <table border="1">
+        <thead>
+            <th>序号</th>
+            <th>id</th>
+            <th>封面</th>
+            <th>名称</th>
+            <th>歌手</th>
+            <th>操作</th>
+        </thead>
+        <tbody id="voices_tbody">
+            
+        </tbody>
+    </table>
+</body>
+<script>
+    var id = getQueryString('id')
+    if(id == null) id = "793914432"
+    var data = {}
+    $.get(localStorage.getItem('apiURL')+"/dj/program?limit=9999999&rid="+id,(d,_)=>{
+        data['id'] = id
+        if(d['code'] != 200){
+            data['id'] = '错误！'
+        }
+        data['songs'] = []
+        for(num1 in d['programs']){
+            var i11 = d['programs'][num1]
+            var i = i11['mainSong']
+            var trackData = {}
+            trackData['id'] = i11['id']
+            trackData['name'] = i['name']
+            trackData['img'] = i11['coverUrl']
+            
+            arts_str = ""
+            for(num2 in i['artists']){
+                i2 = i['artists'][num2]
+                arts_str += i2['name']+" "
+            }
+            trackData['arts'] = arts_str
+            data['songs'].push(trackData)
+        }
+        document.getElementById('voices_title_id').innerHTML = '电台获取：ID: '+data['id']
+        tbody = document.getElementById('voices_tbody')
+        xuhao = 1
+        for(num1 in data['songs']){
+            var i = data['songs'][num1]
+            tr = document.createElement('tr')
+            tr.id = i['id']+"_tr"
+            
+            xuhao_td = document.createElement('td')
+            xuhao_td.innerHTML = xuhao
+
+            id = document.createElement('td')
+            id.innerHTML = i['id']
+
+            image_td = document.createElement('td')
+            image = document.createElement('img')
+            image.id = i['id']+"_tr_image"
+            image.src = i['img']
+            image.height = 50
+            image.width = 50
+            image_td.appendChild(image)
+
+            name_td = document.createElement('td')
+            name_td.id = i['id']+"_tr_name"
+            name_td.innerHTML = i['name']
+            
+            arts = document.createElement('td')
+            arts.id = i['id']+"_tr_arts"
+            arts.innerHTML = i['arts']
+
+            work = document.createElement('td')
+
+            btulist = ""
+            btulist += "<button onclick=\"addlist("+i['id']+")\">添加到歌单</button>"
+            btulist += "<button onclick=\"play("+i['id']+")\">播放</button>"
+            btulist += "<button onclick=\"openNew("+i['id']+")\">网易云音乐打开</button>"
+            work.innerHTML = btulist
+            
+            tr.appendChild(xuhao_td)
+            tr.appendChild(id)
+            tr.appendChild(image_td)
+            tr.appendChild(name_td)
+            tr.appendChild(arts)
+            tr.appendChild(work)
+            
+            tbody.appendChild(tr)
+            xuhao = xuhao + 1
+        }
+    })
+    
+</script>
+</html>

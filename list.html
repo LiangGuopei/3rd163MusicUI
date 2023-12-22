@@ -11,6 +11,18 @@
                 id: id
             })
         }
+        function playVoice(id){
+            var bc = new BroadcastChannel("player-ui-play-voice")
+            bc.postMessage({
+                id: id
+            })
+        }
+        function openNew(id){
+            window.open('https://music.163.com/#/song?id='+id)
+        }
+        function openNewVoice(id){
+            window.open('https://music.163.com/#/program?id='+id)
+        }
         function remove(id){
             list = JSON.parse(localStorage.getItem("list"))
             // console.log(list)
@@ -37,7 +49,15 @@
                 liststr += `<td><img width="50" height="50" src="`+i['image']+`"></td>`
                 liststr += `<td>`+i['title']+`</td>`
                 liststr += `<td>`+i['arts']+`</td>`
-                liststr += `<td><button onclick="play(`+i['id']+`)">播放</button><button onclick="remove(`+i['id']+`)">删除</button></td>`
+                if(i['type'] == "voice"){
+                    liststr += `<td><button onclick="playVoice(`+i['id']+`)">播放</button>`
+                    liststr += `<button onclick="remove(`+i['id']+`)">删除</button>`
+                    liststr += `<button onclick="openNewVoice(`+i['id']+`)">网易云音乐打开</button></td>`
+                }else{
+                    liststr += `<td><button onclick="play(`+i['id']+`)">播放</button>`
+                    liststr += `<button onclick="remove(`+i['id']+`)">删除</button>`
+                    liststr += `<button onclick="openNew(`+i['id']+`)">网易云音乐打开</button></td>`
+                }
                 liststr += "<tr/>"
                 tablestr += liststr
             }

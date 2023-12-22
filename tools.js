@@ -21,8 +21,13 @@ function addlist(id){
             arts: document.getElementById(id+"_tr_arts").innerHTML
         }
         list = JSON.parse(localStorage.getItem('list'))
+        nlist = []
         if(!includesID(list['list'],id)){
-            list['list'].push(d)
+            nlist.push(d)
+            list['list'].forEach((item,_)=>{
+                nlist.push(item)
+            });
+            list['list'] = nlist
             alert('添加成功！')
         }else{
             alert('已存在')

@@ -9,12 +9,15 @@
 </head>
 <body>
     <nav>
-        <script src="index.js"></script>
-        <button onclick="indexPage()">主页</button> |
-        <button onclick="searchPage()">搜索</button> |
-        <button onclick="listPage()">歌单</button> |
-        <button onclick="anliPage()">安利单</button> |
-        <button onclick="phigrosPage()">Phigros</button>
+        <script>
+            function Page(url){
+                document.getElementById('page').src = url
+            }
+        </script>
+        <button onclick="Page('index2.html')">主页</button> |
+        <button onclick="Page('search.html')">搜索</button> |
+        <button onclick="Page('list.html')">歌单</button> |
+        <button onclick="Page('anli.html')">安利</button>
     </nav>
 
 
@@ -25,14 +28,20 @@
     if(localStorage.getItem('apiURL') == null){
         localStorage.setItem('apiURL',"https://163api.qxiao.eu.org")
     }
-    if(localStorage.getItem('lastPlay') != null){
-        document.getElementById("player-id").src = "https://music.163.com/outchain/player?type=2&auto=0&height=66&id="+localStorage.getItem('lastPlay')
+    if(localStorage.getItem('lastPlayURL') != null){
+        document.getElementById("player-id").src = localStorage.getItem('lastPlayURL')
     }
     var bc = new BroadcastChannel("player-ui-play")
     bc.onmessage = function(e){
         // console.log(e.data)
-        localStorage.setItem('lastPlay',e.data['id'])
+        localStorage.setItem('lastPlayURL',"https://music.163.com/outchain/player?type=2&auto=0&height=66&id="+e.data['id'])
         document.getElementById("player-id").src = "https://music.163.com/outchain/player?type=2&auto=1&height=66&id="+e.data['id']
+    }
+    var bc = new BroadcastChannel("player-ui-play-voice")
+    bc.onmessage = function(e){
+        // console.log(e.data)
+        localStorage.setItem('lastPlayURL',"https://music.163.com/outchain/player?type=3&auto=0&height=66&id="+e.data['id'])
+        document.getElementById("player-id").src = "https://music.163.com/outchain/player?type=3&auto=1&height=66&id="+e.data['id']
     }
     if(localStorage.getItem('list') == null || localStorage.getItem('list') == 'null'){
         localStorage.setItem('list',JSON.stringify({list:[]}))
