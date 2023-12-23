@@ -52,11 +52,13 @@
                 if(i['type'] == "voice"){
                     liststr += `<td><button onclick="playVoice(`+i['id']+`)">播放</button>`
                     liststr += `<button onclick="remove(`+i['id']+`)">删除</button>`
-                    liststr += `<button onclick="openNewVoice(`+i['id']+`)">网易云音乐打开</button></td>`
+                    // liststr += `<button onclick="openNewVoice(`+i['id']+`)">网易云音乐打开</button>`
+                    liststr += '</td>'
                 }else{
                     liststr += `<td><button onclick="play(`+i['id']+`)">播放</button>`
                     liststr += `<button onclick="remove(`+i['id']+`)">删除</button>`
-                    liststr += `<button onclick="openNew(`+i['id']+`)">网易云音乐打开</button></td>`
+                    // liststr += `<button onclick="openNew(`+i['id']+`)">网易云音乐打开</button>`
+                    liststr += '</td>'
                 }
                 liststr += "<tr/>"
                 tablestr += liststr
